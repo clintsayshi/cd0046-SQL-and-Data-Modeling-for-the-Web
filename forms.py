@@ -1,8 +1,30 @@
 from datetime import datetime
 from email.policy import default
+from wsgiref.validate import validator
 from flask_wtf import FlaskForm as Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, IntegerField
+from wtforms.validators import DataRequired, AnyOf, URL,Length, InputRequired,NumberRange
+
+class AlbumForm(Form):
+    title = StringField(
+        'title', validators=[DataRequired()]
+    )
+    genre = StringField(
+        'genre',validators=[DataRequired()]
+    )
+    image_link = StringField(
+        'image_link'
+    )
+    tracklist = StringField(
+        'tracklist',
+        validators=[DataRequired()]
+    )
+    year = IntegerField(
+        'year',validators=[InputRequired(), Length(min=4,max=4), NumberRange(min=1800)]
+    )
+    artist_id = StringField(
+        'artist_id', validators=[DataRequired()]
+    )
 
 class ShowForm(Form):
     artist_id = StringField(

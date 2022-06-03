@@ -5,6 +5,8 @@ from flask_moment import Moment
 
 import datetime
 
+from sqlalchemy import nullslast
+
 db = SQLAlchemy()
 
 #----------------------------------------------------------------------------#
@@ -49,7 +51,8 @@ class Artist(db.Model):
     website_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean, nullable=False, default=False)
     seeking_description = db.Column(db.String(120))
-    shows = db.relationship('Show', backref='artist', lazy='select')
+    shows = db.relationship('Show', backref='artist', lazy='select', cascade='all,delete')
+    albums = db.relationship('Album', backref='artist', lazy='select', cascade='all,delete')
 
     def __repr__(self):
       return f"<Artist id:{self.id} name:{self.name} city:{self.city} state:{self.state}>"
@@ -64,3 +67,17 @@ class Show(db.Model):
 
     def __repr__(self):
       return f"<Show id:{self.id} venue_id:{self.venue_id} artist_id:{self.artist_id} start time:{self.start_time}/>"
+
+
+class Album(db.Model):
+    __tablename__ = 'Album'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    image_link = db.Column(db.String())
+    genre = db.Column(db.String(20))
+    tracklist = db.Column(db.ARRAY(db.String(50)), nullable=False)
+    year = db.Column(db.String()) 
+    artist_id = db.Column(db.Integer ,db.ForeignKey('Artist.id'), nullable=False)
+
+    def __repr__(self):
+       return f"<Album id:{self.id} title:{self.title} year:{self.year}>"
